@@ -1,0 +1,267 @@
+10 Questions:
+
+1.	FROM the dataset, usa_names, collect the information on 10 people whose names begin with E, have a number between 10 AND 20?
+
+
+SELECT name, number FROM `bigquery-public-data.usa_names.usa_1910_2013`
+WHERE name like 'E%' 
+AND number between 10 AND 20
+GROUP BY name, number
+LIMIT 10
+
+name	number
+Emmie	12
+Emily	12
+Eleanor	10
+Etta	10
+Elma	11
+Evelyn	15
+Eula	14
+Elvira	11
+Effie	10
+Ella	19
+
+
+
+2.	FROM the dataset FDIC BANKS INSTITUTIONS, arrange 30 banks with respect to their total assets ranging between 10000 AND 100000
+
+SELECT fdic_certificate_number, institution_name, total_assets FROM `bigquery-public-data.fdic_banks.institutions` 
+WHERE total_assets between 10000 AND 100000
+ORDER BY total_assets asc
+LIMIT 30
+
+fdic_certificate_number	institution_name	total_assets
+15081	Citizens State Bank of Eagle Bend	10011
+34063	American Bank (Whitefish)	10012
+32969	Fontainebleau Community Bank	10020
+15274	"Iredell State Bank of Iredell, Texas"	10020
+15103	Bank of Brady	10021
+22095	Valley Bank of Frederick	10032
+10246	Lamb's Bank of Michigan City	10036
+18867	Clay County State Bank	10057
+22275	Continental National Bank of Kentucky	10088
+22031	Illini Bank-Stonington	10103
+28370	Manheim Savings AND Loan Association	10106
+19442	IslAND State Bank	10109
+23829	First Charter Bank	10125
+31889	Central Arkansas Savings AND Loan Association	10129
+17962	Eskridge State Bank	10137
+9466	The First State Bank in Billings	10151
+410	The Bank of Crescent	10154
+23153	Security State Bank	10174
+29201	Republic Federal Savings AND Loan Association	10192
+8269	The Lowry City Bank	10206
+5964	The Junction City Banking Company	10212
+24988	Westminister Manufacturers Hanover Industrial Bank	10212
+2051	American State Bank of New EnglAND	10214
+9424	Farmers & Merchants Bank of Wimbledon	10230
+25073	"First Chicago Investment Advisors, National Association"	10238
+26954	The Bank of Verde Valley	10254
+26827	Community Bank of Marshall County	10271
+90029	First Community Industrial Bank of Lakewood	10276
+1994	The Bank of Cody	10277
+24351	"Oak Lawn Bank, National Association"	10283
+
+
+
+3.	In New York, what are the trees that are understood to be good? 
+
+SELECT tree_id, tree_dbh, health,  FROM `bigquery-public-data.new_york_trees.tree_census_2015`
+WHERE tree_dbh >= 10
+AND health = 'Good'
+GROUP BY tree_id, tree_dbh, health 
+LIMIT 20
+
+tree_id	tree_dbh	health
+108086	11	Good
+552491	18	Good
+552483	20	Good
+552488	20	Good
+552485	15	Good
+552479	11	Good
+552480	11	Good
+552490	16	Good
+45905	27	Good
+45934	15	Good
+45884	11	Good
+45723	15	Good
+46029	13	Good
+45889	15	Good
+45862	11	Good
+45845	11	Good
+45904	12	Good
+45758	18	Good
+46126	34	Good
+46125	21	Good
+
+
+4.	In New York, which are the trees that have diameter greater than 4 but less than 10? 
+
+SELECT tree_id, tree_dbh, health,  FROM `bigquery-public-data.new_york_trees.tree_census_2015`
+WHERE tree_dbh between 4 AND 10
+GROUP BY tree_id, tree_dbh, health
+ORDER BY tree_id asc
+LIMIT 20
+
+tree_id	tree_dbh	health
+9	4	Poor
+10	4	Good
+11	4	Good
+12	4	Good
+13	4	Good
+16	4	Good
+20	4	Poor
+21	4	Fair
+22	4	Poor
+28	4	Fair
+29	7	Good
+30	8	Good
+31	7	Good
+32	8	Fair
+33	7	Good
+34	5	Fair
+35	6	Fair
+36	5	Good
+37	5	Good
+43	4	Good
+
+
+5.	In a baseball match, which Pitch types have seen the maximum number of pitch counts?
+
+SELECT max(pitcherPitchCount), pitchType FROM `bigquery-public-data.baseball.games_post_wide`
+GROUP BY pitchType
+ORDER BY max(pitcherPitchCount) desc
+
+f0_	pitchType
+120	CT
+119	FA
+117	CU
+115	CH
+108	SI
+104	SL
+65	IB
+44	SP
+18	
+15	PI
+
+
+6.	In order for hitters to participate in a baseball match, what would be the minimum acceptable height level? 
+AND how many of such hitters have their last names ending with alphabet D?
+
+SELECT min(hitterHeight), hitterLastName FROM `bigquery-public-data.baseball.games_post_wide`
+WHERE hitterLastName like '%d'
+GROUP BY hitterLastName
+LIMIT 10
+
+f0_	hitterLastName
+77	Heyward
+78	Syndergaard
+74	Crawford
+74	MorelAND
+75	Desmond
+71	Wood
+76	Reimold
+
+
+7.	In the Austin Bike ride data, who were the last 5 bikers in the race that took maximum time to cover the distance?  
+
+SELECT max(duration_minutes), bikeid FROM `bigquery-public-data.austin_bikeshare.bikeshare_trips`
+GROUP BY bikeid
+ORDER BY max(duration_minutes) DESC
+LIMIT 5
+
+f0_	bikeid
+34238	893
+21296	19
+21197	152
+20695	050G
+15024	861
+
+
+
+8.	Use a left join AND combine the bikes available data with the station id, FROM the dataset SAN_FRANCISCO.
+
+SELECT 
+station.station_id,
+sum (status.bikes_available) bikes_available
+FROM `bigquery-public-data.san_francisco.bikeshare_status`  status
+LEFT JOIN `bigquery-public-data.san_francisco.bikeshare_stations`  station
+ON (
+  status.station_id = station.station_id
+)
+GROUP BY station_id
+ORDER BY station_id asc
+LIMIT 20
+
+station_id	bikes_available
+	0
+2	19772767
+3	12803331
+4	8346203
+5	11939050
+6	11664366
+7	12656500
+8	11493052
+9	12089361
+10	9678667
+11	14294849
+12	14553036
+13	10200803
+14	12837799
+16	11015228
+21	9465510
+22	17353868
+23	10980586
+24	11272874
+25	10208293
+
+
+9.	Use left joint to look at the tree diameter for the tree species
+
+SELECT 
+census.spc_common,
+sum (species.tree_dbh) tree_dbh
+FROM `bigquery-public-data.new_york_trees.tree_census_2005`  species
+LEFT JOIN `bigquery-public-data.new_york_trees.tree_census_2015`  census
+ON (
+  species.spc_common = census.spc_common
+)
+GROUP BY spc_common
+ORDER BY spc_common asc
+LIMIT 10
+
+spc_common	tree_dbh
+	7602209
+
+
+10.	FROM the Dataset of World International Debt, find out the value of debt that nations have, using a join. 
+
+SELECT
+country.country_code,
+sum (debt.value) value
+FROM `bigquery-public-data.world_bank_intl_debt.international_debt`  debt
+LEFT JOIN `bigquery-public-data.world_bank_intl_debt.country_series_definitions`  country
+ON (
+ country.country_code = debt.country_code
+)
+GROUP BY country_code
+ORDER BY country_code asc
+LIMIT 15
+
+country_code	value
+	1.1423624392023223E13
+AFG	5.907043604000004E10
+AGO	1.5190419210959805E12
+ALB	1.5934307176479938E11
+ARG	1.0719426858235264E13
+ARM	2.4779626686079892E11
+AZE	1.3557005114016194E12
+BDI	2.5156422177600037E10
+BEN	1.8431743159199924E11
+BFA	3.0830038180480145E11
+BGD	2.036857625364837E12
+BGR	2.6357739251200272E11
+BIH	4.030466777568024E11
+BLR	1.1619957518287927E12
+BLZ	5.229150326399988E10
+
